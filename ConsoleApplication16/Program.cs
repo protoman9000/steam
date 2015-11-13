@@ -11,7 +11,11 @@ using System.Web;
 using Newtonsoft.Json;
 using System.Globalization;
 
-
+/* The purpose of this program is to automate through a json file downloading only
+ the video files and images that we can file. The way it works is first the window 
+ pop up stating which json file you want to use. It will then create a new file and 
+ starts downloading the video files and images asynchronous. Once it is finished it will
+ then pop up a window stating that everythin is finished.*/
 
 
 
