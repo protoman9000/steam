@@ -29,13 +29,17 @@ namespace ConsoleApplication16
             Console.WriteLine("Starting video download");
             Console.WriteLine("Enter the steampull number");
             string input = Console.ReadLine();
+            
+            //searching for the selected json
             using (StreamReader r = File.OpenText(@"C:\Users\Aziz\Downloads\Steampull" + input + ".json"))
             {
                 JObject sources = (JObject)JToken.ReadFrom(new JsonTextReader(r));
+                //the range number for the data.
                 for (int i = 293940; i < 300000; i++)
                 {
                     string newNumber = i.ToString();
 
+                    //goes through the json based on the address of data/movies, if that is not found then skip. 
                     var a = sources[newNumber];
                     if (a == null)
                         continue;
@@ -44,29 +48,33 @@ namespace ConsoleApplication16
                         continue;
                     var movies = a["data"]["movies"];
 
+                    //creating the folder to save all the movies and images.
                     string fileName = (string)a["data"]["name"];
                     string secondNamePlus = fileName.Replace(":", "");
                     string thirdNamePlus = secondNamePlus.Replace("/", "");
                     string fourthNamePlus = thirdNamePlus.Replace("\"", "");
                     string fifthNamePlus = fourthNamePlus.Replace("*", "");
                     
-
+                    //in the movies tab
                     if (movies != null)
                     {
                         var c = b["movies"];
 
                         foreach (var item in c)
                         {
+                            //since the website uses webm for trailers that is what we are looking for.
                             foreach (var item2 in item["webm"])
                             {
 
                                 string url = (string)item2;
 
+                                //converting the string url into an actual url.
                                 Uri uriResult;
                                 bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
                                 if (result == false)
                                     continue;
                                 
+                                //checks if the link is broken or not.
                                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                                 request.Method = "HEAD";
                                 try
@@ -77,7 +85,8 @@ namespace ConsoleApplication16
                                 {
                                     continue;
                                 }
-                                
+
+                                //Removing any uncleared characters and saving the video file.
                                 if (url.Contains(".webm"))
                                 {
                                     if (url.Contains("480"))
@@ -93,6 +102,7 @@ namespace ConsoleApplication16
                                         string pathString1 = System.IO.Path.Combine(Ato, fifthNamePlus);
                                         string pathStringN2 = @"C:\Users\Aziz\Desktop\Ato\" + fifthNamePlus + "\\Trailers ";
 
+                                        //Converts to mpeg
                                         string extension2 = ".mpeg";
                                         string newName = Path.ChangeExtension(sixthName, extension2);
 
@@ -103,6 +113,7 @@ namespace ConsoleApplication16
                                     }
                                     else
                                     {
+                                        //same as above but for high quality videos.
                                         string webName = (string)item["name"] + " max";
                                         string secondName = webName.Replace(":", "");
                                         string thirdName = secondName.Replace("/", "");
@@ -132,16 +143,19 @@ namespace ConsoleApplication16
             }
             Console.WriteLine("Finished downloading videos.");
         }
+        //Getting the header image of the game. 
         public void webHeader()
         {
             Console.WriteLine("Starting header image download");
             Console.WriteLine("Enter the steampull number");
             string input = Console.ReadLine();
+            //searching for the selected json file.
             using (StreamReader r = File.OpenText(@"C:\Users\Aziz\Downloads\Steampull" + input + ".json"))
             {
                 JObject sources = (JObject)JToken.ReadFrom(new JsonTextReader(r));
                 for (int i = 293940; i < 300000; i++)
                 {
+                    //looking for data/header image if it exist. 
                     string newNumber = i.ToString();
                     var a = sources[newNumber];
                     if (a == null)
@@ -150,8 +164,10 @@ namespace ConsoleApplication16
                     if (b == null)
                         continue;
                     
+                    //link to the image
                     string url = (string)a["data"]["header_image"];
 
+                    //check if it is not broken.
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.Method = "HEAD";
                     try
@@ -163,6 +179,7 @@ namespace ConsoleApplication16
                         continue;
                     }
 
+                    //Removing any uncleared characters and saving the image.
                     string webName = (string)a["data"]["name"];
                     string secondName = webName.Replace(":", "");
                     string thirdName = secondName.Replace("/", "");
@@ -188,14 +205,17 @@ namespace ConsoleApplication16
 
         public void webImage()
         {
+            //Downloading the images.
             Console.WriteLine("Starting screenshots download");
             Console.WriteLine("Enter the steampull number");
             string input = Console.ReadLine();
+            //searching for the selected json file.
             using (StreamReader r = File.OpenText(@"C:\Users\Aziz\Downloads\Steampull" + input + ".json"))
             {
                 JObject sources = (JObject)JToken.ReadFrom(new JsonTextReader(r));
                 for (int i = 200000; i < 300000; i++)
                 {
+                    //Going to the location of the image files which is data/screenshots
                     string newNumber = i.ToString();
                     var a = sources[newNumber];
                     if (a == null)
@@ -207,6 +227,7 @@ namespace ConsoleApplication16
                     if (c == null)
                         continue;
 
+                    //removes all the punctautions before saving the file. 
                     string webName2 = (string)a["data"]["name"];
                     string secondName = webName2.Replace(":", "");
                     string thirdName = secondName.Replace("/", "");
@@ -227,6 +248,7 @@ namespace ConsoleApplication16
                             if (result == false)
                                 continue;
 
+                            //If the the link is broken, then this section of the json file is skip completely
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                             request.Method = "HEAD";
                             try
@@ -238,6 +260,7 @@ namespace ConsoleApplication16
                                 continue;
                             }
 
+                            //setting the location of saving jpegs
                             if (url.Contains("jpg"))
                             {
                                 string webName = "Image " + (string)item["id"];
